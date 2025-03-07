@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-outfit);
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+* {
+}
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-outfit);
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+p,
+span {
+  font-family: var(--font-outfit);
+  overflow: hidden;
+}
+
+.fontOutfit {
+  font-family: var(--font-outfit);
+}
