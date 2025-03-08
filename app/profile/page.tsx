@@ -24,8 +24,15 @@ const ProfilePage = () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
+        toast.dismiss();
         toast.error("You need to log in first.");
         router.push(`/login?callback=${encodeURIComponent(pathname)}`);
+        return;
+      }
+
+      const cachedUser = sessionStorage.getItem("user");
+      if (cachedUser) {
+        setUser(JSON.parse(cachedUser));
         return;
       }
 
@@ -38,6 +45,7 @@ const ProfilePage = () => {
         );
 
         if (res.status === 401) {
+          toast.dismiss();
           toast.error("Session expired. Please log in again.");
           router.push(`/login?callback=${encodeURIComponent(pathname)}`);
           return;
@@ -50,6 +58,7 @@ const ProfilePage = () => {
 
         const data = await res.json();
         setUser(data.user);
+        sessionStorage.setItem("user", JSON.stringify(data.user));
       } catch (error) {
         toast.error("Something went wrong. Please try again later.");
       }
@@ -60,6 +69,7 @@ const ProfilePage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token"); // Remove token
+    sessionStorage.removeItem("user");
     setUser(null);
     toast.success("Logged out successfully!");
     router.push("/");
@@ -73,7 +83,7 @@ const ProfilePage = () => {
             {/* Profile Header with Avatar */}
             <div className="flex flex-col items-center">
               <div className="w-24 h-24 bg-[#5038bc] text-white flex items-center justify-center text-4xl font-bold rounded-full shadow-md">
-                {user.name[0]}
+                {user.name[0] + user.name.split(" ")[1][0]}
               </div>
               <h1 className="text-2xl font-bold text-gray-800 mt-4">
                 {user.name}

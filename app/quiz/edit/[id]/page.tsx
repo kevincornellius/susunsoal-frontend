@@ -119,8 +119,10 @@ const EditPage = () => {
         if (res.status === 401) {
           router.push(`/login?callback=${encodeURIComponent(pathname)}`);
         }
-        if (res.status === 403) {
+        // console.log(res);
+        if (res.status === 403 || res.status === 202) {
           toast.error("Unauthourized");
+          router.push("/profile");
         }
         // TODO
         if (!res.ok) toast.error("Failed to fetch quiz");

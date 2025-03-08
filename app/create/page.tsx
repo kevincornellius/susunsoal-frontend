@@ -84,7 +84,15 @@ const CreatePage = () => {
       const token = localStorage.getItem("token");
 
       if (!token) {
+        toast.dismiss();
+        toast.error("You need to log in first.");
         router.push(`/login?callback=${encodeURIComponent(pathname)}`);
+        return;
+      }
+
+      const cachedUser = sessionStorage.getItem("user");
+      if (cachedUser) {
+        setUser(JSON.parse(cachedUser));
         return;
       }
 
@@ -96,6 +104,8 @@ const CreatePage = () => {
           }
         );
         if (res.status === 401) {
+          toast.dismiss();
+          toast.error("Session expired. Please log in again.");
           router.push(`/login?callback=${encodeURIComponent(pathname)}`);
         }
 
@@ -106,6 +116,7 @@ const CreatePage = () => {
 
         const data = await res.json();
         setUser(data.user);
+        sessionStorage.setItem("user", JSON.stringify(data.user));
       } catch (error) {
         toast.error("Something went wrong. Please try again later."); //
       }
@@ -282,6 +293,14 @@ const CreatePage = () => {
           return false;
         }
       }
+      if (
+        question.correctAnswer === "" ||
+        (question.type === "multiple-choice" &&
+          !question.options?.includes(question.correctAnswer))
+      ) {
+        toast.error(`Question ${i + 1} must have an answer!`);
+        return false;
+      }
     }
 
     return true;
@@ -310,6 +329,7 @@ const CreatePage = () => {
         toast.error(data.error || "Failed to save quiz");
       } else {
         toast.success("Quiz saved successfully!");
+        router.push(`/quiz/edit/${data.quiz._id}`);
       }
     } catch (error) {
       toast.error("Server error, try again later");

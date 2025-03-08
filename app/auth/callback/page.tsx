@@ -14,6 +14,7 @@ export default function AuthCallback() {
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token); // Store token (or use cookies)
+      sessionStorage.removeItem("user");
       router.replace(callbackUrl); // Redirect user back to original page
       toast.success("Logged in successfully!");
     } else {

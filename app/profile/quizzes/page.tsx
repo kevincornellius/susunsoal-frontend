@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import toast, { CheckmarkIcon } from "react-hot-toast";
+import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import Loading from "@/components/loading";
 import { RiDraftFill } from "react-icons/ri";
 import { MdPublish } from "react-icons/md";
+import { BiCheck } from "react-icons/bi";
 
 type Quiz = {
   _id: string;
@@ -14,6 +15,7 @@ type Quiz = {
   description: string;
   coverImage: string;
   published: boolean;
+  attemptCount: number;
 };
 
 type User = {
@@ -35,6 +37,11 @@ const MyQuizList = () => {
       if (!token) {
         toast.error("You need to log in first.");
         router.push(`/login?callback=${encodeURIComponent(pathname)}`);
+        return;
+      }
+      const cachedUser = sessionStorage.getItem("user");
+      if (cachedUser) {
+        setUser(JSON.parse(cachedUser));
         return;
       }
 
@@ -59,6 +66,7 @@ const MyQuizList = () => {
 
         const data = await res.json();
         setUser(data.user);
+        sessionStorage.setItem("user", JSON.stringify(data.user));
       } catch (error) {
         toast.error("Something went wrong. Please try again later.");
       }
@@ -66,6 +74,7 @@ const MyQuizList = () => {
 
     fetchUser();
   }, []);
+
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -83,7 +92,7 @@ const MyQuizList = () => {
           }
         );
 
-        if (!res.ok) throw new Error("Failed to fetch quizzes");
+        if (!res.ok) toast.error("Failed to fetch quizzes");
         const data = await res.json();
         setQuizzes(data.quizzes);
       } catch (err) {
@@ -133,9 +142,15 @@ const MyQuizList = () => {
     );
   if (quizzes.length === 0)
     return (
-      <p className="text-center text-gray-600">
-        You have not created any quizzes yet.
-      </p>
+      <div className="min-h-screen flex flex-col justify-center items-center font-semibold text-center text-black text-2xl">
+        <h1>You have not created any quizzes yet.</h1>
+        <button
+          onClick={() => router.push("/create")}
+          className="bg-[#6750cf] hover:bg-[#5038BC] cursor-pointer px-4 py-2 text-white m-4 rounded-xl font-normal text-lg "
+        >
+          Create Quiz
+        </button>
+      </div>
     );
 
   return (
@@ -147,8 +162,9 @@ const MyQuizList = () => {
         {quizzes.map((quiz) => (
           <div
             key={quiz._id}
-            className="bg-white border-2 border-gray-400 flex w-full  flex-col justify-between shadow-lg rounded-lg p-2 transition hover:shadow-xl relative"
+            className="bg-white border-2 border-gray-400 flex w-full flex-col justify-between shadow-lg rounded-lg p-2 transition hover:shadow-xl relative"
           >
+            {/* Cover Image */}
             <div
               className="rounded-md"
               style={{
@@ -162,7 +178,8 @@ const MyQuizList = () => {
               }}
             ></div>
 
-            <div className=" mt-2 p-2">
+            {/* Quiz Details */}
+            <div className="mt-2 p-2">
               <h3 className="text-xl font-bold text-[#333333] truncate">
                 {quiz.title}
               </h3>
@@ -170,29 +187,55 @@ const MyQuizList = () => {
                 {quiz.description}
               </p>
               <div className="w-full h-px my-3 bg-gray-400"></div>
+
+              {/* Publish Status */}
               <p
                 className={`text-sm mt-2 flex items-center gap-2 font-semibold ${
                   quiz.published ? "text-green-600" : "text-red-500"
                 }`}
               >
-                {quiz.published ? <MdPublish /> : <RiDraftFill />}
-                {quiz.published ? "Published" : "Draft"}
+                {quiz.attemptCount > 0 ? (
+                  <BiCheck />
+                ) : quiz.published ? (
+                  <MdPublish />
+                ) : (
+                  <RiDraftFill />
+                )}
+                {quiz.attemptCount > 0
+                  ? "Attempted"
+                  : quiz.published
+                  ? "Published"
+                  : "Draft"}
               </p>
+
+              {/* Action Buttons */}
               <div className="mt-4 flex gap-2">
-                <button
-                  className="flex cursor-pointer items-center gap-2 bg-[#6750cf] hover:bg-[#5038BC] text-white px-2 py-2 rounded-md w-full transition"
-                  onClick={() => router.push(`/quiz/edit/${quiz._id}`)}
-                >
-                  <FaEdit />
-                  Edit
-                </button>
-                <button
-                  className="flex cursor-pointer items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-2 py-2 rounded-md w-full transition"
-                  onClick={() => handleDelete(quiz._id)}
-                >
-                  <FaTrash />
-                  Delete
-                </button>
+                {quiz.attemptCount > 0 ? (
+                  <button
+                    className="flex cursor-pointer items-center gap-2 bg-[#6750cf] hover:bg-[#5038BC] text-white px-2 py-2 rounded-md w-full transition"
+                    onClick={() => router.push(`/quiz/${quiz._id}/submissions`)}
+                  >
+                    <FaEye />
+                    View Submissions
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="flex cursor-pointer items-center gap-2 bg-[#6750cf] hover:bg-[#5038BC] text-white px-2 py-2 rounded-md w-full transition"
+                      onClick={() => router.push(`/quiz/edit/${quiz._id}`)}
+                    >
+                      <FaEdit />
+                      Edit
+                    </button>
+                    <button
+                      className="flex cursor-pointer items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-2 py-2 rounded-md w-full transition"
+                      onClick={() => handleDelete(quiz._id)}
+                    >
+                      <FaTrash />
+                      Delete
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>

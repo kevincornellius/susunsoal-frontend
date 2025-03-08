@@ -16,7 +16,15 @@ type User = {
 export default function LoginPage() {
   const pathname = usePathname();
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+
+  if (error === "access_denied") {
+    toast.error("Google sign-in was canceled.");
+  }
+  if (error === "authentication_failed") {
+    toast.error("Google sign-in failed. Please try again.");
+  }
 
   // Fetch user data
   useEffect(() => {
@@ -49,7 +57,6 @@ export default function LoginPage() {
 
     fetchUser();
   }, []);
-  const searchParams = useSearchParams();
   const callback = searchParams.get("callback") || pathname; // Default to current page
 
   const handleLogin = () => {
