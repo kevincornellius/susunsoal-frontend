@@ -142,7 +142,7 @@ const AttemptsProfilePage = () => {
     );
 
   return (
-    <div className="p-10 min-h-screen mx-auto max-w-4xl">
+    <div className="p-10 min-h-screen mx-auto max-w-4xl text-black">
       <h1 className="text-2xl font-bold mb-6">My Quiz Attempts</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -183,14 +183,14 @@ const AttemptsProfilePage = () => {
             {attempt.status === "submitted" ? (
               <button
                 onClick={() => router.push(`/quiz/result/${attempt._id}`)}
-                className="mt-4 w-full bg-[#5038BC] text-white p-2 rounded-lg hover:bg-[#3c2a9d] transition"
+                className="mt-4 w-full hover:opacity-75 cursor-pointer  bg-[#5038BC] text-white p-2 rounded-lg hover:bg-[#3c2a9d] transition"
               >
                 View Result
               </button>
             ) : (
               <button
                 onClick={() => router.push(`/quiz/start/${attempt.quizId}`)}
-                className="mt-4 w-full bg-[#5038BC] text-white p-2 rounded-lg hover:bg-[#3c2a9d] transition"
+                className="mt-4 w-full hover:opacity-75 cursor-pointer bg-[#5038BC] text-white p-2 rounded-lg hover:bg-[#3c2a9d] transition"
               >
                 Go to Quiz
               </button>

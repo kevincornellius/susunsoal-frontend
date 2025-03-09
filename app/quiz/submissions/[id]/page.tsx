@@ -140,7 +140,7 @@ const SubmissionPage = () => {
     );
 
   return (
-    <div className="p-10 min-h-screen w-full mx-auto">
+    <div className="p-10 min-h-screen w-full mx-auto text-black">
       <h1 className="text-2xl font-bold mb-6 text-center">Quiz Submissions</h1>
 
       {attempts.length === 0 ? (
@@ -185,7 +185,7 @@ const SubmissionPage = () => {
                 <button
                   onClick={() => router.push(`/quiz/result/${attempt._id}`)}
                   disabled={!isCompleted}
-                  className={`mt-4 w-full px-4 py-2 rounded-lg transition ${
+                  className={`mt-4 w-full px-4 py-2 rounded-lg transition cursor-pointer ${
                     isCompleted
                       ? "bg-[#5038BC] text-white hover:bg-[#3c2a9d]"
                       : "bg-gray-400 text-gray-700 cursor-not-allowed"

@@ -127,26 +127,36 @@ function Home() {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // Handle scroll behavior
   useEffect(() => {
+    const threshold = 20;
+    let scrollDelta = 0;
+
     const handleScroll = () => {
-      if (window.scrollY < lastScrollY) {
+      const scrollY = window.scrollY;
+      const scrollDifference = scrollY - lastScrollY;
+
+      if (scrollDifference < 0) {
         setIsVisible(true);
+        scrollDelta = 0;
       } else {
-        setIsVisible(false);
+        scrollDelta += scrollDifference;
+        if (scrollDelta > threshold) {
+          setIsVisible(false);
+          scrollDelta = 0; // Reset after hiding
+        }
       }
-      setLastScrollY(window.scrollY);
+
+      setLastScrollY(scrollY);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
-
   return (
     <div className=" text-black min-h-screen w-full">
       {/* Search and Category Filters */}
       <div
-        className={`fixed top-[10vh] md:top-0 left-0 md:left-70 w-full md:w-[calc(100%-70px)] pl-16 p-5 bg-white bg-opacity-75 shadow-md flex flex-col md:flex-row gap-4 items-center z-40 transition-all duration-300 ${
+        className={`fixed top-[10vh] md:top-0 left-0 md:left-70 w-full md:w-[calc(100%-70px)] md:pl-16 p-5 bg-white bg-opacity-75 shadow-md flex flex-col md:flex-row gap-4 items-center z-40 transition-all duration-300 ${
           isVisible
             ? "translate-y-0 opacity-100"
             : "-translate-y-full opacity-0"
@@ -214,7 +224,10 @@ function Home() {
               <h1>{selectedCategory} Quizzes</h1>
               <span
                 className="text-red-400 hover:text-red-500 cursor-pointer"
-                onClick={() => setSelectedCategory("")}
+                onClick={() => {
+                  setSelectedCategory("");
+                  setPage(1);
+                }}
               >
                 <TiCancel />{" "}
               </span>
@@ -253,7 +266,10 @@ function Home() {
                       <button
                         key={ctg}
                         className="bg-[#6750cf] hover:bg-[#5038BC] text-white px-3 rounded-lg text-sm cursor-pointer"
-                        onClick={() => setSelectedCategory(ctg)}
+                        onClick={() => {
+                          setSelectedCategory(ctg);
+                          setPage(1);
+                        }}
                       >
                         {ctg}
                       </button>

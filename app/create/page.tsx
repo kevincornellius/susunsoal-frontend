@@ -51,11 +51,11 @@ const backgroundImages = [
   "/purple.png",
   "https://imakahi.fkh.ugm.ac.id/wp-content/uploads/sites/1126/2018/06/2560x1440-baby-pink-solid-color-background.jpg",
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfoMKr9btG-dYiYCqYaW695h9a4c_XC5eriA&s",
-  "https://www.inprocorp.com/globalassets/color--finish-images/standard-solid/brittanyblue.jpg?width=500&height=500&mode=crophttps://img.freepik.com/free-vector/learning-concept-illustration_114360-6186.jpg",
-  "https://img.freepik.com/free-vector/gradient-international-day-education-background_23-2151120699.jpg?t=st=1741504197~exp=1741507797~hmac=7d32b7252c2b6e9884bdb515a116bd760cde2c49faf4e191e06d4236a5008b34&w=1380",
-  "https://img.freepik.com/free-vector/gradient-international-day-education-background_23-2151120693.jpg?t=st=1741504219~exp=1741507819~hmac=055cbb603927961f0a1144761b85c2fceb7cfdf2ddb8eb5371f83b85318e06fe&w=1380",
-  "https://img.freepik.com/free-vector/flat-national-science-day-background_23-2149283132.jpg?t=st=1741504243~exp=1741507843~hmac=44f11ea3a4ad17ecb9284e9ee7f1f0c2b2deb8f55623a14856f368742fb693c4&w=1380",
-  "https://img.freepik.com/free-vector/flat-international-day-education-background_23-2151081135.jpg?t=st=1741504280~exp=1741507880~hmac=9638d7affdec5973fae0a0c80d185c1fb128b2b7fb36aa1abd4f86976552b187&w=1380",
+  "https://www.inprocorp.com/globalassets/color--finish-images/standard-solid/brittanyblue.jpg?width=500&height=500&mode=crop",
+  "https://res.cloudinary.com/debjatc2b/image/upload/v1741524886/mgoykfkndlongbz7jhbq.avif",
+  "https://res.cloudinary.com/debjatc2b/image/upload/v1741524920/bfkcy0xopssmdi8dkdwx.jpg",
+  "https://res.cloudinary.com/debjatc2b/image/upload/v1741524939/wz4fsvqpzjpd88c0fntl.jpg",
+  "https://res.cloudinary.com/debjatc2b/image/upload/v1741524963/b7ux2ra4jxz21albmgng.jpg",
 ];
 
 const categories = [
@@ -326,6 +326,7 @@ const CreatePage = () => {
       );
 
       const data = await res.json();
+      console.log(data);
       if (!res.ok) {
         toast.error(data.error || "Failed to save quiz");
       } else {
@@ -423,7 +424,7 @@ const CreatePage = () => {
                         setQuiz({ ...quiz, coverImage: image });
                         setIsMenuOpen(false);
                       }}
-                      className="border rounded w-fit overflow-hidden hover:opacity-75 focus:outline-none"
+                      className="border rounded cursor-pointer w-fit overflow-hidden hover:opacity-75 focus:outline-none"
                     >
                       <img
                         src={`${image}`}
@@ -436,7 +437,7 @@ const CreatePage = () => {
 
                 {/* Close Button */}
                 <button
-                  className="mt-4 px-4 py-2 bg-gray-500 text-white rounded w-full"
+                  className="mt-4 px-4 py-2 bg-gray-500 text-white rounded w-full cursor-pointer hover:opacity-75"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Close

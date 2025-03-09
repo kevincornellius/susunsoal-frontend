@@ -141,7 +141,7 @@ const DetailPage = () => {
         <div className="mt-6 flex justify-start">
           <button
             onClick={() => router.push(`start/${id}`)}
-            className="flex items-center gap-2 bg-[#5038BC] text-white px-6 py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-[#4028a0] transition duration-300 transform hover:scale-105"
+            className="flex items-center gap-2 cursor-pointer bg-[#5038BC] text-white px-6 py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-[#4028a0] transition duration-300 transform hover:scale-105"
           >
             <FaPlay /> Start Quiz
           </button>

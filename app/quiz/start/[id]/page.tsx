@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter, useParams, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import Loading from "@/components/loading";
-import { FaArrowCircleLeft, FaArrowCircleRight, FaClock } from "react-icons/fa";
+import { FaClock } from "react-icons/fa";
+import { FaCircleQuestion } from "react-icons/fa6";
 
 type Question = {
   _id: string;
@@ -279,8 +280,12 @@ const StartQuizPage = () => {
       const diff = Math.max(0, Math.floor((endTime - now) / 1000));
       // console.log(diff);
       if (diff <= 0) {
-        router.push(`/quiz/result/${attempt?._id}`);
+        setSubmitting(true);
+        setTimeout(() => {
+          router.push(`/quiz/result/${attempt?._id}`);
+        }, 4000);
       }
+
       setTimeLeft(diff);
     };
 
@@ -325,7 +330,7 @@ const StartQuizPage = () => {
     );
   if (!quiz)
     return (
-      <p className="min-h-screen flex justify-center items-center font-semibold">
+      <p className="min-h-screen text-black flex justify-center items-center font-semibold">
         Quiz not found.
       </p>
     );
@@ -333,10 +338,12 @@ const StartQuizPage = () => {
   const currentQuestion = quiz.questions[currentQuestionIndex];
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-white">
+    <div className="flex flex-col min-h-screen w-full bg-white text-black">
       <div className=" md:fixed top-20 md:top-0 left-0  z-40 flex flex-col sm:flex-row md:flex-col justify-around p-6 pt-12 w-full md:w-70  md:p-6">
         <div>
-          <h1 className="text-xl font-bold text-[#5038BC]">{quiz.title}</h1>
+          <h1 className="text-xl font-bold text-white bg-[#5038BC] p-2 rounded-xl w-fit">
+            {quiz.title}
+          </h1>
 
           {/* Timer */}
           <div className="flex items-center gap-2 text-red-500 font-bold text-lg mt-2">
@@ -351,17 +358,19 @@ const StartQuizPage = () => {
         </div>
 
         <div>
-          <h2 className="font-semibold text-lg mb-4 mt-4 sm:mt-0">Questions</h2>
+          <h2 className="font-semibold text-lg mb-4 mt-4 sm:mt-3">Questions</h2>
           <div className="grid grid-cols-7 sm:grid-cols-8 md:grid-cols-6 gap-2">
             {quiz.questions.map((q, index) => (
               <button
                 key={q._id}
                 onClick={() => setCurrentQuestionIndex(index)}
-                className={`sm:p-2 text-center border rounded-lg cursor-pointer ${
+                className={`sm:p-2 text-center  border rounded-lg cursor-pointer ${
                   index === currentQuestionIndex
                     ? "bg-[#5038BC] text-white"
-                    : "bg-white"
-                }`}
+                    : inputValues[quiz.questions[index]._id]
+                    ? "bg-[#ae9eff] text-white"
+                    : "bg-white hover:bg-gray-200"
+                }  `}
               >
                 {index + 1}
               </button>
@@ -370,7 +379,7 @@ const StartQuizPage = () => {
           <button
             disabled={submitting}
             onClick={handleSubmitQuiz}
-            className="w-fit bg-red-500 text-white p-2 mt-4 rounded-lg"
+            className="w-fit bg-red-500 cursor-pointer hover:opacity-70 text-white p-2 mt-4 rounded-lg"
           >
             {submitting ? "Submitting..." : "Submit Quiz"}
           </button>
@@ -380,10 +389,15 @@ const StartQuizPage = () => {
       {/* Quiz Content */}
       <div className="flex-grow p-6 md:p-20 mt-0 md:mt-20">
         {/* Current Question */}
-        <h1 className="mt-5 font-semibold text-2xl">{`Question: ${
-          currentQuestionIndex + 1
-        }`}</h1>
+
         <div className="mt-6 p-4 border rounded-lg shadow-sm">
+          <h1 className="font-semibold text-2xl flex items-center gap-2">
+            <FaCircleQuestion className="text-[#5038BC]" />
+            {`Question ${currentQuestionIndex + 1}`}
+          </h1>
+
+          <div className="w-full h-[1.5px] bg-gray-200 my-4"></div>
+
           <p className="font-semibold">{currentQuestion.questionText}</p>
 
           {currentQuestion.type === "multiple-choice" && (
@@ -397,7 +411,7 @@ const StartQuizPage = () => {
                       [currentQuestion._id]: option,
                     }))
                   }
-                  className={`block w-full text-left p-2 border rounded ${
+                  className={`block w-full text-left cursor-pointer p-2 border rounded ${
                     inputValues[currentQuestion._id] === option
                       ? "bg-[#5038BC] text-white"
                       : "hover:bg-gray-200"
@@ -431,9 +445,9 @@ const StartQuizPage = () => {
             onClick={() =>
               setCurrentQuestionIndex((prev) => Math.max(prev - 1, 0))
             }
-            className="p-2 border rounded-lg hover:bg-gray-200 cursor-pointer"
+            className="p-2 border text-white bg-[#5038BC] hover:opacity-80 rounded-xl px-2 font-semibold cursor-pointer"
           >
-            <FaArrowCircleLeft />
+            Previous Question
           </button>
           {currentQuestionIndex === quiz.questions.length - 1 ? (
             <button
@@ -450,9 +464,9 @@ const StartQuizPage = () => {
                   Math.min(prev + 1, quiz.questions.length - 1)
                 )
               }
-              className="p-2 border rounded-lg hover:bg-gray-200 cursor-pointer"
+              className="p-2 border text-white bg-[#5038BC] hover:opacity-80 rounded-xl px-2 font-semibold cursor-pointer"
             >
-              <FaArrowCircleRight />
+              Next Question
             </button>
           )}
         </div>

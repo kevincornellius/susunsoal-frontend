@@ -164,7 +164,7 @@ const Menubar = () => {
             className={`z-[39] text-black h-screen w-full md:w-70 bg-white drop-shadow-xl p-7 fixed hidden md:flex flex-col justify-between md:justify-end transition-transform duration-300`}
           >
             <div
-              className="bg-[#5038BC] w-fit p-2 mb-5 text-white rounded-2xl"
+              className="bg-[#5038BC] w-fit p-2 mb-5 hover:opacity-75 text-white rounded-2xl cursor-pointer"
               onClick={() => router.push("/")}
             >
               <FaArrowLeftLong />

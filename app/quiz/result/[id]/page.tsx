@@ -4,6 +4,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaTrophy, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { HiPresentationChartBar } from "react-icons/hi2";
 
 type Question = {
   _id: string;
@@ -146,7 +147,7 @@ const ResultPage = () => {
     );
 
   return (
-    <div className="min-h-screen w-full p-10">
+    <div className="min-h-screen w-full p-10 text-black">
       <h1 className="text-2xl font-bold mb-6 text-center">Quiz Results</h1>
 
       {attempt && (
@@ -170,7 +171,7 @@ const ResultPage = () => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {quiz?.questions.map((question) => {
+        {quiz?.questions.map((question, i) => {
           const userAnswer = attempt?.answers.find(
             (ans) => ans.questionId === question._id
           );
@@ -180,8 +181,12 @@ const ResultPage = () => {
           return (
             <div
               key={question._id}
-              className="p-4 border rounded-lg shadow-md bg-white"
+              className="p-6 border rounded-lg shadow-md bg-white flex flex-col justify-between"
             >
+              <h2 className="font-semibold text-[#5038BC]">
+                Questions: {i + 1}
+              </h2>
+              <div className="w-full h-[1.5px] bg-gray-200 my-2"></div>
               <p className="font-semibold">{question.questionText}</p>
 
               <div
@@ -199,14 +204,18 @@ const ResultPage = () => {
                 </span>
               </div>
 
-              <p className="text-gray-700 mt-1">
-                Correct Answer: {question.correctAnswer}
-              </p>
+              <p className=" mt-1 ">Correct Answer: {question.correctAnswer}</p>
 
               {question.explanation && (
-                <p className="mt-2 text-gray-600">
-                  <strong>Explanation:</strong> {question.explanation}
-                </p>
+                <div className=" bg-green-50  px-4 py-3 rounded-2xl my-2">
+                  <h2 className="flex text-[#5038BC] items-center gap-2 my-2">
+                    <HiPresentationChartBar />
+                    Explanation
+                  </h2>
+                  <p className="mt-2 text-gray-700">
+                    <strong>Explanation:</strong> {question.explanation}
+                  </p>
+                </div>
               )}
             </div>
           );

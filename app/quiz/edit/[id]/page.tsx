@@ -43,13 +43,13 @@ type Quiz = {
 
 const backgroundImages = [
   "/purple.png",
-  "/sit.png",
-  "/happy.png",
-  "https://img.freepik.com/free-vector/learning-concept-illustration_114360-6186.jpg",
-  "https://img.freepik.com/free-vector/learning-concept-illustration_114360-3454.jpg",
-  "https://img.freepik.com/free-vector/gradient-background-knowledge-day-celebration_23-2150665651.jpg",
-  "https://static.vecteezy.com/system/resources/thumbnails/003/501/025/small/distance-learning-icons-composition-vector.jpg",
-  "https://static.vecteezy.com/system/resources/previews/003/112/374/non_2x/online-learning-with-teacher-free-vector.jpg",
+  "https://imakahi.fkh.ugm.ac.id/wp-content/uploads/sites/1126/2018/06/2560x1440-baby-pink-solid-color-background.jpg",
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfoMKr9btG-dYiYCqYaW695h9a4c_XC5eriA&s",
+  "https://www.inprocorp.com/globalassets/color--finish-images/standard-solid/brittanyblue.jpg?width=500&height=500&mode=crop",
+  "https://res.cloudinary.com/debjatc2b/image/upload/v1741524886/mgoykfkndlongbz7jhbq.avif",
+  "https://res.cloudinary.com/debjatc2b/image/upload/v1741524920/bfkcy0xopssmdi8dkdwx.jpg",
+  "https://res.cloudinary.com/debjatc2b/image/upload/v1741524939/wz4fsvqpzjpd88c0fntl.jpg",
+  "https://res.cloudinary.com/debjatc2b/image/upload/v1741524963/b7ux2ra4jxz21albmgng.jpg",
 ];
 
 const categories = [
@@ -405,7 +405,7 @@ const EditPage = () => {
                         setQuiz({ ...quiz, coverImage: image });
                         setIsMenuOpen(false);
                       }}
-                      className="border rounded w-fit overflow-hidden hover:opacity-75 focus:outline-none"
+                      className="border rounded cursor-pointer w-fit overflow-hidden hover:opacity-75 focus:outline-none"
                     >
                       <img
                         src={`${image}`}
