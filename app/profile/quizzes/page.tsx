@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import toast, { CheckmarkIcon } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import Loading from "@/components/loading";
 import { RiDraftFill } from "react-icons/ri";
@@ -68,6 +68,7 @@ const MyQuizList = () => {
         setUser(data.user);
         sessionStorage.setItem("user", JSON.stringify(data.user));
       } catch (error) {
+        console.error("Error:", error);
         toast.error("Something went wrong. Please try again later.");
       }
     };
@@ -96,6 +97,7 @@ const MyQuizList = () => {
         const data = await res.json();
         setQuizzes(data.quizzes);
       } catch (err) {
+        console.error("Error:", err);
         setError("Failed to load your quizzes. Please try again later.");
       } finally {
         setFetching(false);
@@ -126,6 +128,7 @@ const MyQuizList = () => {
       toast.success("Quiz deleted successfully!");
       setQuizzes(quizzes.filter((quiz) => quiz._id !== quizId));
     } catch (err) {
+      console.error("Error:", err);
       toast.error("Error deleting quiz. Please try again.");
     }
   };

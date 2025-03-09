@@ -79,6 +79,7 @@ const ResultPage = () => {
         setUser(data.user);
         sessionStorage.setItem("user", JSON.stringify(data.user));
       } catch (error) {
+        console.error("Error:", error);
         toast.error("Something went wrong. Please try again later.");
       }
     };
@@ -120,8 +121,12 @@ const ResultPage = () => {
         setAttempt(data.attempt);
         setQuiz(data.attemptedQuiz);
         setAttemptor(data.attemptorName);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }
@@ -132,7 +137,7 @@ const ResultPage = () => {
     }
   }, [id]);
 
-  if (loading) return <Loading />;
+  if (loading || !user) return <Loading />;
   if (error)
     return (
       <p className="min-h-screen w-full flex justify-center items-center text-center text-red-500">

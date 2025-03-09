@@ -118,6 +118,7 @@ const CreatePage = () => {
         setUser(data.user);
         sessionStorage.setItem("user", JSON.stringify(data.user));
       } catch (error) {
+        console.error("Error:", error);
         toast.error("Something went wrong. Please try again later."); //
       }
     };
@@ -332,6 +333,7 @@ const CreatePage = () => {
         router.push(`/quiz/edit/${data.quiz._id}`);
       }
     } catch (error) {
+      console.error("Error:", error);
       toast.error("Server error, try again later");
     }
   };

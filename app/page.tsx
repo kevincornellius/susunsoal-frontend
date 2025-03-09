@@ -1,8 +1,7 @@
 "use client";
 import Loading from "@/components/loading";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState, useCallback } from "react";
-import toast from "react-hot-toast";
+import React, { useEffect, useState, useCallback, Suspense } from "react";
 import {
   FaAngleDoubleRight,
   FaArrowLeft,
@@ -38,7 +37,16 @@ const categories = [
   "Music",
   "Trivia",
 ];
-const HomePage = () => {
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <Home />
+    </Suspense>
+  );
+}
+
+function Home() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -305,6 +313,4 @@ const HomePage = () => {
       </div>
     </div>
   );
-};
-
-export default HomePage;
+}

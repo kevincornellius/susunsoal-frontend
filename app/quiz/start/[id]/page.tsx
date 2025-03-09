@@ -95,6 +95,7 @@ const StartQuizPage = () => {
         setUser(data.user);
         sessionStorage.setItem("user", JSON.stringify(data.user));
       } catch (error) {
+        console.error("Error:", error);
         toast.error("Something went wrong. Please try again later.");
       }
     };
@@ -120,8 +121,12 @@ const StartQuizPage = () => {
 
         const data = await res.json();
         setQuiz(data.quiz);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }
@@ -224,6 +229,7 @@ const StartQuizPage = () => {
 
       console.log(attempt);
     } catch (error) {
+      console.error("Error:", error);
       toast.error("Failed to save answer");
     }
   };
@@ -255,6 +261,7 @@ const StartQuizPage = () => {
       toast.success("Quiz submitted successfully!");
       router.push(`/quiz/result/${attemptId}`);
     } catch (error) {
+      console.error("Error:", error);
       toast.error("Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);

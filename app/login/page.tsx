@@ -4,27 +4,30 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { FaGoogle } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
-
-type User = {
-  _id: string;
-  name: string;
-  email: string;
-  avatar: string;
-};
+import { Suspense, useEffect } from "react";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginComponent />
+    </Suspense>
+  );
+}
+
+function LoginComponent() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
-  if (error === "access_denied") {
-    toast.error("Google sign-in was canceled.");
-  }
-  if (error === "authentication_failed") {
-    toast.error("Google sign-in failed. Please try again.");
-  }
+  useEffect(() => {
+    if (error === "access_denied") {
+      toast.error("Google sign-in was canceled.");
+    }
+    if (error === "authentication_failed") {
+      toast.error("Google sign-in failed. Please try again.");
+    }
+  }, [error]);
 
   // Fetch user data
   useEffect(() => {
@@ -52,11 +55,13 @@ export default function LoginPage() {
         }
 
         router.push("/profile");
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error:", error);
+      }
     };
 
     fetchUser();
-  }, []);
+  }, [router]);
   const callback = searchParams.get("callback") || pathname; // Default to current page
 
   const handleLogin = () => {
@@ -67,6 +72,7 @@ export default function LoginPage() {
       googleAuthUrl.searchParams.set("state", callback); // Store callback in `state`
       window.location.href = googleAuthUrl.toString();
     } catch (error) {
+      console.error("Error:", error);
       toast.error("Login failed. Please try again.");
     }
   };

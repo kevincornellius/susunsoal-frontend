@@ -2,10 +2,19 @@
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import Loading from "@/components/loading";
 import toast from "react-hot-toast";
 
-export default function AuthCallback() {
+export default function AuthCallbackPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <AuthCallback />
+    </Suspense>
+  );
+}
+
+function AuthCallback() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -22,5 +31,5 @@ export default function AuthCallback() {
     }
   }, [token, callbackUrl, router]);
 
-  return <Loading />; // Temporary message while redirecting
+  return <Loading />; // Temporary loading message while redirecting
 }

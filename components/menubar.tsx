@@ -72,7 +72,9 @@ const Menubar = () => {
         const data = await res.json();
         setUser(data.user);
         sessionStorage.setItem("user", JSON.stringify(data.user));
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error:", error);
+      }
     };
 
     fetchUser();

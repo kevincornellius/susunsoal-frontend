@@ -130,6 +130,7 @@ const EditPage = () => {
         const data = await res.json();
         setQuiz(data.quiz);
       } catch (err) {
+        console.error("Error:", err);
         toast.error("Quiz not found or an error occurred.");
       } finally {
       }
@@ -314,6 +315,7 @@ const EditPage = () => {
         toast.success("Quiz saved successfully!");
       }
     } catch (error) {
+      console.error("Error:", error);
       toast.error("Server error, try again later");
     }
   };

@@ -74,6 +74,7 @@ const AttemptsProfilePage = () => {
         setUser(data.user);
         sessionStorage.setItem("user", JSON.stringify(data.user));
       } catch (error) {
+        console.error("Error:", error);
         toast.error("Something went wrong. Please try again later.");
       }
     };
@@ -103,8 +104,12 @@ const AttemptsProfilePage = () => {
 
         const data = await res.json();
         setAttempts(data.attempts);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }
@@ -113,7 +118,7 @@ const AttemptsProfilePage = () => {
     fetchAttempts();
   }, []);
 
-  if (!user) {
+  if (!user || loading) {
     return <Loading />;
   }
 

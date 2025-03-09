@@ -12,12 +12,6 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 
-type User = {
-  _id: string;
-  name: string;
-  email: string;
-};
-
 type Answer = {
   _id?: string;
   questionId: string;
@@ -75,6 +69,7 @@ const SubmissionPage = () => {
         setUser(data.user);
         sessionStorage.setItem("user", JSON.stringify(data.user));
       } catch (error) {
+        console.error("Error:", error);
         toast.error("Something went wrong. Please try again later.");
       }
     };
@@ -105,8 +100,12 @@ const SubmissionPage = () => {
         const data = await res.json();
         console.log(data);
         setAttempts(data.attempts);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }
@@ -117,7 +116,7 @@ const SubmissionPage = () => {
     }
   }, [id]);
 
-  if (!user) {
+  if (!user || loading) {
     return <Loading />;
   }
 
