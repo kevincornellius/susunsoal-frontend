@@ -49,13 +49,13 @@ type Quiz = {
 
 const backgroundImages = [
   "/purple.png",
-  "/sit.png",
-  "/happy.png",
-  "https://img.freepik.com/free-vector/learning-concept-illustration_114360-6186.jpg",
-  "https://img.freepik.com/free-vector/learning-concept-illustration_114360-3454.jpg",
-  "https://img.freepik.com/free-vector/gradient-background-knowledge-day-celebration_23-2150665651.jpg",
-  "https://static.vecteezy.com/system/resources/thumbnails/003/501/025/small/distance-learning-icons-composition-vector.jpg",
-  "https://static.vecteezy.com/system/resources/previews/003/112/374/non_2x/online-learning-with-teacher-free-vector.jpg",
+  "https://imakahi.fkh.ugm.ac.id/wp-content/uploads/sites/1126/2018/06/2560x1440-baby-pink-solid-color-background.jpg",
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfoMKr9btG-dYiYCqYaW695h9a4c_XC5eriA&s",
+  "https://www.inprocorp.com/globalassets/color--finish-images/standard-solid/brittanyblue.jpg?width=500&height=500&mode=crophttps://img.freepik.com/free-vector/learning-concept-illustration_114360-6186.jpg",
+  "https://img.freepik.com/free-vector/gradient-international-day-education-background_23-2151120699.jpg?t=st=1741504197~exp=1741507797~hmac=7d32b7252c2b6e9884bdb515a116bd760cde2c49faf4e191e06d4236a5008b34&w=1380",
+  "https://img.freepik.com/free-vector/gradient-international-day-education-background_23-2151120693.jpg?t=st=1741504219~exp=1741507819~hmac=055cbb603927961f0a1144761b85c2fceb7cfdf2ddb8eb5371f83b85318e06fe&w=1380",
+  "https://img.freepik.com/free-vector/flat-national-science-day-background_23-2149283132.jpg?t=st=1741504243~exp=1741507843~hmac=44f11ea3a4ad17ecb9284e9ee7f1f0c2b2deb8f55623a14856f368742fb693c4&w=1380",
+  "https://img.freepik.com/free-vector/flat-international-day-education-background_23-2151081135.jpg?t=st=1741504280~exp=1741507880~hmac=9638d7affdec5973fae0a0c80d185c1fb128b2b7fb36aa1abd4f86976552b187&w=1380",
 ];
 
 const categories = [

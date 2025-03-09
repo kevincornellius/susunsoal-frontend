@@ -213,7 +213,7 @@ const MyQuizList = () => {
                 {quiz.attemptCount > 0 ? (
                   <button
                     className="flex cursor-pointer items-center gap-2 bg-[#6750cf] hover:bg-[#5038BC] text-white px-2 py-2 rounded-md w-full transition"
-                    onClick={() => router.push(`/quiz/${quiz._id}/submissions`)}
+                    onClick={() => router.push(`/quiz/submissions/${quiz._id}`)}
                   >
                     <FaEye />
                     View Submissions

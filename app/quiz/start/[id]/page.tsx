@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useParams, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import Loading from "@/components/loading";
@@ -19,17 +19,47 @@ type Quiz = {
   questions: Question[];
 };
 
+type Answer = {
+  _id?: string;
+  questionId: string;
+  selectedAnswer: string;
+};
+
+type Attempt = {
+  _id: string;
+  quizId: string;
+  userId: string;
+  userName: string;
+  startTime: string;
+  endTime?: string;
+  status: "in-progress" | "submitted";
+  score?: number | null;
+  answers: Answer[];
+  __v: number;
+};
+
 const StartQuizPage = () => {
   const pathname = usePathname();
   const { id } = useParams(); // Get quiz ID from URL
+  const [attempt, setAttempt] = useState<Attempt | null>(null);
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [timeLeft, setTimeLeft] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+
+  const useDebounce = <T,>(value: T, delay: number = 2000): T => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(() => {
+      const handler = setTimeout(() => setDebouncedValue(value), delay);
+      return () => clearTimeout(handler);
+    }, [value, delay]);
+
+    return debouncedValue;
+  };
 
   // User
   useEffect(() => {
@@ -90,7 +120,6 @@ const StartQuizPage = () => {
 
         const data = await res.json();
         setQuiz(data.quiz);
-        setTimeLeft(data.quiz.timeLimit * 60); // Convert minutes to seconds
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -101,67 +130,113 @@ const StartQuizPage = () => {
     fetchQuiz();
   }, [id, user]);
 
-  // Start Attempt
   useEffect(() => {
-    if (!user || !id) return;
-
-    const startAttempt = async () => {
+    console.log(user);
+    if (!user) return;
+    const fetchAttempt = async () => {
       try {
         const token = localStorage.getItem("token");
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/attempt/start`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/attempt/quiz/${id}`,
           {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ quizId: id }),
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        if (!res.ok) throw new Error("Failed to start quiz attempt");
+        if (res.ok) {
+          const data: Attempt = await res.json();
+          console.log("exist:", data);
+          setAttempt(data);
+        } else {
+          // Start a new attempt if not found
+          console.log("new");
+          const newRes = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/attempt/start`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ quizId: id }),
+            }
+          );
 
-        const data = await res.json();
-        sessionStorage.setItem("attemptId", data.attempt._id);
-      } catch (err: any) {
-        setError(err.message);
+          if (newRes.ok) {
+            const newData: Attempt = await newRes.json();
+            setAttempt(newData);
+          }
+        }
+      } catch (error) {
+        console.log("aa");
+        console.error("Error fetching attempt:", error);
       }
     };
 
-    startAttempt();
-  }, [id, user]);
+    fetchAttempt();
+    console.log(attempt);
+  }, [user]);
 
-  // Save Attempt
+  // Save Answer
   const handleAnswerSelect = async (questionId: string, answer: string) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: answer }));
-
     try {
       const token = localStorage.getItem("token");
-      const attemptId = sessionStorage.getItem("attemptId");
+      const attemptId = attempt?._id;
+      console.log(attempt);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/attempt/save`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            attemptId,
+            questionId,
+            selectedAnswer: answer,
+          }),
+        }
+      );
+      console.log(res);
+      if (!res.ok) throw new Error("Failed to save answer");
+      console.log("Set", questionId, answer);
+      setAttempt((prev) => {
+        if (!prev) return prev;
 
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/attempt/save`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          attemptId,
-          questionId,
-          selectedAnswer: answer,
-        }),
+        // Create a new answers array
+        const updatedAnswers = prev.answers.map((ans) =>
+          ans.questionId === questionId
+            ? { ...ans, selectedAnswer: answer }
+            : ans
+        );
+
+        // If the answer doesn't exist, add it
+        const answerExists = prev.answers.some(
+          (ans) => ans.questionId === questionId
+        );
+        const newAnswers = answerExists
+          ? updatedAnswers
+          : [...updatedAnswers, { questionId, selectedAnswer: answer }];
+
+        return { ...prev, answers: newAnswers };
       });
+
+      console.log(attempt);
     } catch (error) {
       toast.error("Failed to save answer");
     }
   };
 
-  // Submit attempt
+  const [submitting, setSubmitting] = useState(false);
+  // Submit Attempt
   const handleSubmitQuiz = async () => {
     try {
+      setSubmitting(true);
       const token = localStorage.getItem("token");
-      const attemptId = sessionStorage.getItem("attemptId");
+      const attemptId = attempt?._id;
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/attempt/submit`,
@@ -178,17 +253,61 @@ const StartQuizPage = () => {
       if (!res.ok) throw new Error("Failed to submit quiz");
 
       toast.success("Quiz submitted successfully!");
-      router.push(`/quiz/result/${id}`);
+      router.push(`/quiz/result/${attemptId}`);
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   useEffect(() => {
-    if (timeLeft <= 0) return;
-    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
+    if (!attempt?.endTime) return;
+
+    const updateTimer = () => {
+      if (!attempt.endTime) return;
+
+      const now = new Date().getTime();
+      const endTime = new Date(attempt.endTime).getTime();
+      const diff = Math.max(0, Math.floor((endTime - now) / 1000));
+      // console.log(diff);
+      if (diff <= 0) {
+        router.push(`/quiz/result/${attempt?._id}`);
+      }
+      setTimeLeft(diff);
+    };
+
+    updateTimer();
+    const timer = setInterval(updateTimer, 1000);
+
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [attempt?.endTime]);
+
+  const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
+  const lastSubmittedValues = useRef<{ [key: string]: string }>({});
+  const debouncedValues = useDebounce(inputValues, 2000);
+
+  useEffect(() => {
+    if (attempt && Array.isArray(attempt.answers)) {
+      const initialValues: { [key: string]: string } = {};
+      attempt.answers.forEach((ans) => {
+        initialValues[ans.questionId] = ans.selectedAnswer || "";
+      });
+      setInputValues(initialValues);
+    }
+  }, [attempt]);
+
+  useEffect(() => {
+    Object.entries(debouncedValues).forEach(([questionId, answer]) => {
+      if (
+        answer !== undefined &&
+        lastSubmittedValues.current[questionId] !== answer
+      ) {
+        handleAnswerSelect(questionId, answer);
+        lastSubmittedValues.current[questionId] = answer;
+      }
+    });
+  }, [debouncedValues]);
 
   if (loading) return <Loading />;
   if (error)
@@ -215,8 +334,12 @@ const StartQuizPage = () => {
           {/* Timer */}
           <div className="flex items-center gap-2 text-red-500 font-bold text-lg mt-2">
             <FaClock />
-            Time Left: {Math.floor(timeLeft / 60)}:
-            {(timeLeft % 60).toString().padStart(2, "0")}
+            Time Left:{" "}
+            {timeLeft !== null
+              ? `${Math.floor(timeLeft / 60)}:${(timeLeft % 60)
+                  .toString()
+                  .padStart(2, "0")}`
+              : "N/A"}
           </div>
         </div>
 
@@ -238,10 +361,11 @@ const StartQuizPage = () => {
             ))}
           </div>
           <button
+            disabled={submitting}
             onClick={handleSubmitQuiz}
             className="w-fit bg-red-500 text-white p-2 mt-4 rounded-lg"
           >
-            Submit Quiz
+            {submitting ? "Submitting..." : "Submit Quiz"}
           </button>
         </div>
       </div>
@@ -261,10 +385,13 @@ const StartQuizPage = () => {
                 <button
                   key={option}
                   onClick={() =>
-                    handleAnswerSelect(currentQuestion._id, option)
+                    setInputValues((prev) => ({
+                      ...prev,
+                      [currentQuestion._id]: option,
+                    }))
                   }
                   className={`block w-full text-left p-2 border rounded ${
-                    answers[currentQuestion._id] === option
+                    inputValues[currentQuestion._id] === option
                       ? "bg-[#5038BC] text-white"
                       : "hover:bg-gray-200"
                   }`}
@@ -280,9 +407,12 @@ const StartQuizPage = () => {
               type="text"
               className="border p-2 rounded w-full mt-2"
               placeholder="Type your answer here..."
-              value={answers[currentQuestion._id] || ""}
+              value={inputValues[currentQuestion._id] ?? ""}
               onChange={(e) =>
-                handleAnswerSelect(currentQuestion._id, e.target.value)
+                setInputValues((prev) => ({
+                  ...prev,
+                  [currentQuestion._id]: e.target.value,
+                }))
               }
             />
           )}
@@ -300,10 +430,11 @@ const StartQuizPage = () => {
           </button>
           {currentQuestionIndex === quiz.questions.length - 1 ? (
             <button
+              disabled={submitting}
               onClick={handleSubmitQuiz}
               className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-400 cursor-pointer"
             >
-              Submit Quiz
+              {submitting ? "Submitting..." : "Submit Quiz"}
             </button>
           ) : (
             <button

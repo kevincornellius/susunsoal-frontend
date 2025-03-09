@@ -138,14 +138,14 @@ const HomePage = () => {
     <div className=" text-black min-h-screen w-full">
       {/* Search and Category Filters */}
       <div
-        className={`fixed top-[10vh] md:top-0 left-0 md:left-70 w-full md:w-[calc(100%-70px)] p-5 bg-white bg-opacity-75 shadow-md flex flex-col md:flex-row gap-4 items-center z-40 transition-all duration-300 ${
+        className={`fixed top-[10vh] md:top-0 left-0 md:left-70 w-full md:w-[calc(100%-70px)] pl-16 p-5 bg-white bg-opacity-75 shadow-md flex flex-col md:flex-row gap-4 items-center z-40 transition-all duration-300 ${
           isVisible
             ? "translate-y-0 opacity-100"
             : "-translate-y-full opacity-0"
         }`}
       >
         {/* Search Input Section */}
-        <div className="relative w-full md:w-[50%] flex items-center">
+        <div className="relative w-full md:w-[35%] flex items-center">
           <input
             type="text"
             placeholder="Search quizzes..."
