@@ -76,7 +76,7 @@ const DetailPage = () => {
   return (
     <div className="p-6 min-h-screen px-6 md:px-16 bg-white shadow-lg  w-full">
       <h2
-        className="flex items-center gap-2 font-semibold text-lg my-2 hover:opacity-75 cursor-pointer"
+        className="flex items-center gap-2 font-semibold text-lg my-2 hover:opacity-75 text-black cursor-pointer"
         onClick={() => router.push("/")}
       >
         <FaCircleLeft className="text-[#5038BC] " />
