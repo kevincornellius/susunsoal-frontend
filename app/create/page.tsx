@@ -307,12 +307,14 @@ const CreatePage = () => {
     return true;
   };
 
+  const [saving, setSaving] = useState(false);
+
   const handleSaveQuiz = async () => {
     if (!validateQuiz(quiz)) return;
 
     try {
       const token = localStorage.getItem("token"); // Get the auth token
-
+      setSaving(true);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/quiz/save`,
         {
@@ -335,6 +337,8 @@ const CreatePage = () => {
     } catch (error) {
       console.error("Error:", error);
       toast.error("Server error, try again later");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -789,6 +793,7 @@ const CreatePage = () => {
           <button
             className="bg-[#5038BC] my-4 mx-5 flex font-semibold mt-8 items-center gap-2 transition-all cursor-pointer hover:opacity-75 text-white px-4 py-2 rounded"
             onClick={handleSaveQuiz}
+            disabled={saving}
           >
             <FaSave />
             Save Quiz
