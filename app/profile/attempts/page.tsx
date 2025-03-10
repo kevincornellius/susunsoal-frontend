@@ -91,7 +91,6 @@ const AttemptsProfilePage = () => {
     const fetchAttempts = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log(token);
         if (!token) throw new Error("User not authenticated");
 
         const res = await fetch(

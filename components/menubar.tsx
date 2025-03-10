@@ -40,7 +40,6 @@ const Menubar = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
-      console.log(token);
       if (!token) {
         console.log("User not logged in: No token found in localStorage");
         setUser(null);

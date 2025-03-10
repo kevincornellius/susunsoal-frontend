@@ -137,7 +137,6 @@ const StartQuizPage = () => {
   }, [id, user]);
 
   useEffect(() => {
-    console.log(user);
     if (!user) return;
     const fetchAttempt = async () => {
       try {
@@ -151,11 +150,9 @@ const StartQuizPage = () => {
 
         if (res.ok) {
           const data: Attempt = await res.json();
-          console.log("exist:", data);
           setAttempt(data);
         } else {
           // Start a new attempt if not found
-          console.log("new");
           const newRes = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/attempt/start`,
             {
@@ -174,13 +171,11 @@ const StartQuizPage = () => {
           }
         }
       } catch (error) {
-        console.log("aa");
         console.error("Error fetching attempt:", error);
       }
     };
 
     fetchAttempt();
-    console.log(attempt);
   }, [user]);
 
   // Save Answer
@@ -188,7 +183,6 @@ const StartQuizPage = () => {
     try {
       const token = localStorage.getItem("token");
       const attemptId = attempt?._id;
-      console.log(attempt);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/attempt/save`,
         {
@@ -204,9 +198,7 @@ const StartQuizPage = () => {
           }),
         }
       );
-      console.log(res);
       if (!res.ok) throw new Error("Failed to save answer");
-      console.log("Set", questionId, answer);
       setAttempt((prev) => {
         if (!prev) return prev;
 
@@ -227,8 +219,6 @@ const StartQuizPage = () => {
 
         return { ...prev, answers: newAnswers };
       });
-
-      console.log(attempt);
     } catch (error) {
       console.error("Error:", error);
       toast.error("Failed to save answer");

@@ -99,7 +99,6 @@ const SubmissionPage = () => {
 
         if (!res.ok) throw new Error("Failed to fetch quiz submissions");
         const data = await res.json();
-        console.log(data);
         setAttempts(data.attempts);
       } catch (err: unknown) {
         if (err instanceof Error) {

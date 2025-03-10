@@ -326,7 +326,6 @@ const CreatePage = () => {
       );
 
       const data = await res.json();
-      console.log(data);
       if (!res.ok) {
         toast.error(data.error || "Failed to save quiz");
       } else {

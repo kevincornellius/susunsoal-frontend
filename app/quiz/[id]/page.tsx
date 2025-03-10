@@ -33,7 +33,6 @@ const DetailPage = () => {
             method: "GET",
           }
         );
-        console.log(res.status);
         if (res.status === 403) setError("Access denied");
 
         const data = await res.json();
@@ -50,11 +49,7 @@ const DetailPage = () => {
       }
     };
 
-    console.log(id);
-
     if (id) {
-      console.log("wa");
-
       fetchQuiz();
     }
   }, [id]);

@@ -115,7 +115,6 @@ const EditPage = () => {
           }
         );
 
-        console.log(res);
         if (res.status === 401) {
           router.push(`/login?callback=${encodeURIComponent(pathname)}`);
         }
