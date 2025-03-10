@@ -11,6 +11,7 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
+import { FaCircleLeft } from "react-icons/fa6";
 
 type Answer = {
   _id?: string;
@@ -141,7 +142,13 @@ const SubmissionPage = () => {
 
   return (
     <div className="p-10 min-h-screen w-full mx-auto text-black">
-      <h1 className="text-2xl font-bold mb-6 text-center">Quiz Submissions</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold mb-6 text-center">
+        <FaCircleLeft
+          onClick={() => router.push("/profile")}
+          className="text-[#5038BC] hover:opacity-75 cursor-pointer"
+        />
+        Quiz Submissions
+      </h1>
 
       {attempts.length === 0 ? (
         <p className="text-gray-600 text-center">

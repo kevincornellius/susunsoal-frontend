@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaCheckCircle, FaClock, FaChartBar } from "react-icons/fa";
+import { FaCircleLeft } from "react-icons/fa6";
 
 type User = {
   _id: string;
@@ -134,7 +135,7 @@ const AttemptsProfilePage = () => {
         <h1>You have not Attempted any quiz yet.</h1>
         <button
           onClick={() => router.push("/")}
-          className="bg-[#6750cf] hover:bg-[v] cursor-pointer px-4 py-2 text-white m-4 rounded-xl font-normal text-lg "
+          className="bg-[#6750cf] hover:bg-[#5038BC] cursor-pointer px-4 py-2 text-white m-4 rounded-xl font-normal text-lg "
         >
           Explore Quiz
         </button>
@@ -143,7 +144,13 @@ const AttemptsProfilePage = () => {
 
   return (
     <div className="p-10 min-h-screen mx-auto max-w-4xl text-black">
-      <h1 className="text-2xl font-bold mb-6">My Quiz Attempts</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold mb-6">
+        <FaCircleLeft
+          onClick={() => router.push("/profile")}
+          className="text-[#5038BC] hover:opacity-75 cursor-pointer"
+        />
+        My Quiz Attempts
+      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {attempts.map((attempt) => (

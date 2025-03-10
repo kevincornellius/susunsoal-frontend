@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { MdCalendarToday, MdCategory, MdDescription } from "react-icons/md";
-import { FaClock, FaPlay, FaUser } from "react-icons/fa6";
+import { FaCircleLeft, FaClock, FaPlay, FaUser } from "react-icons/fa6";
 import Loading from "@/components/loading";
 
 type Quiz = {
@@ -75,6 +75,13 @@ const DetailPage = () => {
 
   return (
     <div className="p-6 min-h-screen px-6 md:px-16 bg-white shadow-lg  w-full">
+      <h2
+        className="flex items-center gap-2 font-semibold text-lg my-2 hover:opacity-75 cursor-pointer"
+        onClick={() => router.push("/")}
+      >
+        <FaCircleLeft className="text-[#5038BC] " />
+        Back to Home
+      </h2>
       {/* Cover Image */}
       {quiz.coverImage && (
         <div
@@ -85,7 +92,10 @@ const DetailPage = () => {
 
       <div className="p-6 text-left">
         {/* Quiz Title */}
-        <h1 className="text-4xl font-extrabold text-[#5038BC]">{quiz.title}</h1>
+        <h1 className="text-4xl font-extrabold text-[#5038BC]">
+          {" "}
+          {quiz.title}
+        </h1>
         <p className="text-gray-600 text-sm flex items-center justify-start gap-2 mt-1">
           <FaUser className="text-[#5038BC]" /> Created by:{" "}
           <span className="font-medium">{quiz.creatorName}</span>
@@ -94,7 +104,7 @@ const DetailPage = () => {
         {/* Description */}
         {quiz.description && (
           <div className="mt-4 bg-gray-100 p-4 rounded-lg shadow-sm">
-            <p className="flex items-center gap-2 text-gray-700">
+            <p className="flex flex-col  items-start  gap-2 text-gray-700">
               <MdDescription className="text-[#5038BC] text-lg" />
               {quiz.description}
             </p>

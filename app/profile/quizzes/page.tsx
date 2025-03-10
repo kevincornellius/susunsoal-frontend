@@ -8,6 +8,7 @@ import Loading from "@/components/loading";
 import { RiDraftFill } from "react-icons/ri";
 import { MdPublish } from "react-icons/md";
 import { BiCheck } from "react-icons/bi";
+import { FaCircleLeft } from "react-icons/fa6";
 
 type Quiz = {
   _id: string;
@@ -158,7 +159,11 @@ const MyQuizList = () => {
 
   return (
     <div className="min-h-screen mx-auto p-12">
-      <h2 className="text-3xl font-bold  text-gray-800 mb-6">
+      <h2 className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-3xl font-bold  text-gray-800 mb-6">
+        <FaCircleLeft
+          onClick={() => router.push("/profile")}
+          className="text-[#5038BC] hover:opacity-75 cursor-pointer"
+        />{" "}
         Your Created Quizzes
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

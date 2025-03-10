@@ -4,6 +4,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaTrophy, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaCircleLeft } from "react-icons/fa6";
 import { HiPresentationChartBar } from "react-icons/hi2";
 
 type Question = {
@@ -148,7 +149,13 @@ const ResultPage = () => {
 
   return (
     <div className="min-h-screen w-full p-10 text-black">
-      <h1 className="text-2xl font-bold mb-6 text-center">Quiz Results</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold mb-6 text-center">
+        <FaCircleLeft
+          onClick={() => router.push("/profile")}
+          className="text-[#5038BC] hover:opacity-75 cursor-pointer"
+        />
+        Quiz Results
+      </h1>
 
       {attempt && (
         <div className="bg-white p-6 rounded-lg shadow-md mb-6 text-center">
@@ -213,7 +220,7 @@ const ResultPage = () => {
                     Explanation
                   </h2>
                   <p className="mt-2 text-gray-700">
-                    <strong>Explanation:</strong> {question.explanation}
+                    <strong>Explanaation:</strong> {question.explanation}
                   </p>
                 </div>
               )}
@@ -221,6 +228,13 @@ const ResultPage = () => {
           );
         })}
       </div>
+
+      <button
+        onClick={() => router.push("/")}
+        className="bg-[#5038BC] text-xl text-white px-4 py-2 rounded-xl cursor-pointer my-8 hover:opacity-75"
+      >
+        Back to Home
+      </button>
     </div>
   );
 };
