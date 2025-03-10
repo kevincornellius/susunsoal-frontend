@@ -220,7 +220,7 @@ const ResultPage = () => {
                     Explanation
                   </h2>
                   <p className="mt-2 text-gray-700">
-                    <strong>Explanaation:</strong> {question.explanation}
+                    <strong>Explanation:</strong> {question.explanation}
                   </p>
                 </div>
               )}
